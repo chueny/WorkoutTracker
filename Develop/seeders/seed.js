@@ -1,5 +1,5 @@
 let mongoose = require("mongoose");
-let db = require("../models");
+let Workout = require("../models/workoutModel"); //but I dont have a models file
 
 mongoose.connect("mongodb://localhost/workout", {
   useNewUrlParser: true,
@@ -134,14 +134,14 @@ let workoutSeed = [
     ]
   }
 ];
+// Workout.find({}).then(data =>{console.log(data)});
 
-db.Workout.deleteMany({})
-  .then(() => db.Workout.collection.insertMany(workoutSeed))
+Workout.deleteMany({})
+  .then(() => Workout.collection.insertMany(workoutSeed))
   .then(data => {
     console.log(data.result.n + " records inserted!");
     process.exit(0);
   })
   .catch(err => {
-    console.error(err);
-    process.exit(1);
+    console.error(err);//     process.exit(1);
   });
