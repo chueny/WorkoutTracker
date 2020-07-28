@@ -20,6 +20,16 @@ app.use(cors());
 
 app.use(express.static("public"));
 
+//Routes for each of the html routes, to refactor under views
+app.get("/exercise", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/stats.html"));
+});
+
+
 //get last workout
 app.get("/api/workouts", (req, res) => {
     Workout.find({}).then(data =>{
@@ -37,31 +47,24 @@ app.put("/api/workouts/:id", (req, res)=>{
 
     // console.log(req.body);
     // res.send(res.body);
-    const { day, exercises, type, name, weight, reps, sets, duration, distance } = req.body;
+    //const { day, exercises, type, name, weight, reps, sets, duration, distance } = req.body;
     
     Workout.update(
     {
-        _id: mongojs.ObjectId(req.params.id)
+        _id: req.params.id  //mongojs.ObjectId()
     },
     {
      $set: 
-        { day,
-        exercises:[
-        type,
-        name,
-        weight, 
-        reps,
-        sets,
-        duration,
-        distance 
-        ]
-        // type: req.body.type, 
-        // name: req.body.name,
-        // weight: req.body.weight,
-        // reps: req.body.weight,
-        // sets: req.body.sets,
-        // duration: req.body.duration,
-        // distance: req.body.distance
+        { day: req.body.day,
+            exercises:[{
+                type: req.body.type, 
+                name: req.body.name,
+                weight: req.body.weight,
+                reps: req.body.weight,
+                sets: req.body.sets,
+                duration: req.body.duration,
+                distance: req.body.distance
+            }]
         }
     }), (err, data) => {
     if (err){
@@ -73,13 +76,33 @@ app.put("/api/workouts/:id", (req, res)=>{
 
 //create a workout
 app.post("/api/workouts", (req, res)=>{
-    Workout.insert({body}, (err, data) =>{
-        if (err){
-            console.log(err);
-        }else {
-            res.json(data);
-        }
-    });  
+    // Workout.create({}, (err, data) =>{
+    //     if (err){
+    //         console.log(err);
+    //     }else {
+    //         res.json(data);
+    //     }
+    // });  
+
+    //look at front ent and how its sending data
+    Workout.create({
+         day: req.body.day,
+            exercises:[{
+                type: req.body.type, 
+                name: req.body.name,
+                weight: req.body.weight,
+                reps: req.body.weight,
+                sets: req.body.sets,
+                duration: req.body.duration,
+                distance: req.body.distance
+            }]
+    })
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
 
 });
 
