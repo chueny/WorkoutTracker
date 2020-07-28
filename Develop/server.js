@@ -38,14 +38,11 @@ app.get("/api/workouts", (req, res) => {
     .catch(err => {
         res.json(err);
     });
-    
-    //res.json({data: "Hello"});
 });
 
 
 app.put("/api/workouts/:id", (req, res)=>{
-
-    // console.log(req.body);
+     console.log("PUT", req.body);
     // res.send(res.body);
     //const { day, exercises, type, name, weight, reps, sets, duration, distance } = req.body;
     
@@ -56,7 +53,7 @@ app.put("/api/workouts/:id", (req, res)=>{
     {
      $set: 
         { day: req.body.day,
-            exercises:[{
+            exercises:{
                 type: req.body.type, 
                 name: req.body.name,
                 weight: req.body.weight,
@@ -64,7 +61,7 @@ app.put("/api/workouts/:id", (req, res)=>{
                 sets: req.body.sets,
                 duration: req.body.duration,
                 distance: req.body.distance
-            }]
+            }
         }
     }), (err, data) => {
     if (err){
@@ -76,45 +73,42 @@ app.put("/api/workouts/:id", (req, res)=>{
 
 //create a workout
 app.post("/api/workouts", (req, res)=>{
-    // Workout.create({}, (err, data) =>{
-    //     if (err){
-    //         console.log(err);
-    //     }else {
-    //         res.json(data);
-    //     }
-    // });  
+   console.log(req.body);
+    Workout.create({})
+        .then((data)=> res.json(data))
+        .catch((err) => { res.json(err);
+        });
 
     //look at front ent and how its sending data
-    Workout.create({
-         day: req.body.day,
-            exercises:[{
-                type: req.body.type, 
-                name: req.body.name,
-                weight: req.body.weight,
-                reps: req.body.weight,
-                sets: req.body.sets,
-                duration: req.body.duration,
-                distance: req.body.distance
-            }]
-    })
-    .then(dbWorkout => {
-      res.json(dbWorkout);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-
+    // Workout.create({
+    //      day: req.body.day,
+    //         exercises:[{
+    //             type: req.body.type, 
+    //             name: req.body.name,
+    //             weight: req.body.weight,
+    //             reps: req.body.weight,
+    //             sets: req.body.sets,
+    //             duration: req.body.duration,
+    //             distance: req.body.distance
+    //         }]
+    // })
+    // .then(dbWorkout => {
+    //   res.json(dbWorkout);
+    // })
+    // .catch(err => {
+    //   res.json(err);
+    // });
 });
 
 //getWorkoutsinRange
 app.get("/api/workouts/range", (req, res) => {
-    
-    Workout.find({}).then(data =>{
-        res.json(data);
-    })
-    .catch(err => {
-        res.json(err);
-    });
+    Workout.find({})
+        .then(data =>{
+            res.json(data);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 db.once("open", function (){
