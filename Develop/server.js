@@ -42,19 +42,19 @@ app.get("/api/workouts", (req, res) => {
 app.put("/api/workouts/:id", (req, res)=>{
     console.log("THIS IS THE APP.PUT", req.body);
     
-    Workout.findByIdAndUpdate(
-    {
-       "_id": req.params.id  //mongojs.ObjectId()
-    },
-    {
-      $push: {exercises: req.body}
-  
-    }), (err, data) => {
-    if (err){
-        console.log(err);
-    }else{
-        res.send(data);
-    }};
+    Workout.update(
+        {
+            _id: req.params.id
+        }, 
+        {
+            $set:{exercises: req.body}  
+        })
+       .then((dbworkout)=>{
+         res.json(dbworkout)
+       })
+       .catch(err => {
+           res.json(err);
+         });
 });
 
 //create a workout
