@@ -29,7 +29,6 @@ app.get("/stats", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/stats.html"));
 });
 
-
 //get last workout
 app.get("/api/workouts", (req, res) => {
     Workout.find({}).then(data =>{
@@ -40,29 +39,16 @@ app.get("/api/workouts", (req, res) => {
     });
 });
 
-
 app.put("/api/workouts/:id", (req, res)=>{
-     console.log("PUT", req.body);
-    // res.send(res.body);
-    //const { day, exercises, type, name, weight, reps, sets, duration, distance } = req.body;
+    console.log("THIS IS THE APP.PUT", req.body);
     
-    Workout.update(
+    Workout.findByIdAndUpdate(
     {
-        _id: req.params.id  //mongojs.ObjectId()
+       "_id": req.params.id  //mongojs.ObjectId()
     },
     {
-     $set: 
-        { day: req.body.day,
-            exercises:{
-                type: req.body.type, 
-                name: req.body.name,
-                weight: req.body.weight,
-                reps: req.body.weight,
-                sets: req.body.sets,
-                duration: req.body.duration,
-                distance: req.body.distance
-            }
-        }
+      $push: {exercises: req.body}
+  
     }), (err, data) => {
     if (err){
         console.log(err);
@@ -73,31 +59,11 @@ app.put("/api/workouts/:id", (req, res)=>{
 
 //create a workout
 app.post("/api/workouts", (req, res)=>{
-   console.log(req.body);
+    //console.log(req.body);
     Workout.create({})
         .then((data)=> res.json(data))
         .catch((err) => { res.json(err);
         });
-
-    //look at front ent and how its sending data
-    // Workout.create({
-    //      day: req.body.day,
-    //         exercises:[{
-    //             type: req.body.type, 
-    //             name: req.body.name,
-    //             weight: req.body.weight,
-    //             reps: req.body.weight,
-    //             sets: req.body.sets,
-    //             duration: req.body.duration,
-    //             distance: req.body.distance
-    //         }]
-    // })
-    // .then(dbWorkout => {
-    //   res.json(dbWorkout);
-    // })
-    // .catch(err => {
-    //   res.json(err);
-    // });
 });
 
 //getWorkoutsinRange
